@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>Profile</title></head>
+<body>
+<h2>Profile: <span th:text="${user.username}"></span></h2>
+<p>Role: <span th:text="${user.role}"></span></p>
+<p>Server time: <span th:text="${serverTime}"></span></p>
+<p>Visit counter (unique profile entries this session): <span th:text="${visitCount}"></span></p>
+
+<div>
+    <h3>Photo</h3>
+    <div th:if="${user.photoFilename}">
+        <img th:src="@{'/uploads/' + ${user.photoFilename}}" alt="photo" style="max-width:200px"/>
+    </div>
+    <form th:action="@{/profile/upload}" method="post" enctype="multipart/form-data">
+        <input type="file" name="file"/>
+        <button type="submit">Upload</button>
+    </form>
+</div>
+
+<form th:action="@{/logout}" method="post">
+    <button type="submit">Logout</button>
+</form>
+</body>
+</html>
