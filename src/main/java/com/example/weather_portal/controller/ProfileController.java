@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.RequestParam;
+import jakarta.servlet.http.HttpServletRequest;
+
+
 
 import java.nio.file.Files;
 
@@ -26,6 +30,42 @@ public class ProfileController {
         this.visitService = vs;
         this.userService = us;
     }
+    @PostMapping("/profile/password")
+    public String updatePassword(Authentication auth,
+                                 @RequestParam String oldPassword,
+                                 @RequestParam String newPassword,
+                                 @RequestParam String confirmPassword,
+                                 HttpServletRequest request) {
+
+        User user = userRepo.findByUsername(auth.getName())
+                .orElseThrow();
+
+        try {
+            userService.changePassword(user, oldPassword, newPassword, confirmPassword);
+        }
+        catch (RuntimeException e) {
+            return "redirect:/profile?passwordError";
+        }
+
+        request.getSession().invalidate(); // выходим из системы
+        return "redirect:/login?passwordChanged";
+    }
+
+    @PostMapping("/profile/username")
+    public String updateUsername(Authentication auth,
+                                 @RequestParam("username") String username, HttpServletRequest request) {
+
+        User user = userRepo.findByUsername(auth.getName())
+                .orElseThrow();
+
+        userService.changeUsername(user, username);
+
+        request.getSession().invalidate(); // обязательно
+
+        return "redirect:/login?usernameChanged";
+    }
+
+
 
     @GetMapping("/profile")
     public String profile(Authentication auth, Model model, HttpSession session) throws Exception {

@@ -29,6 +29,39 @@ public class UserService {
             throw new RuntimeException("Can't create upload dir", e);
         }
     }
+    public void changePassword(User user,
+                               String oldPassword,
+                               String newPassword,
+                               String confirmPassword) {
+        if (!pwEncoder.matches(oldPassword, user.getPassword())) {
+            throw new RuntimeException("Неверный старый пароль");
+        }
+
+        if (!newPassword.equals(confirmPassword)) {
+            throw new RuntimeException("Пароли не совпадают");
+        }
+
+        if (!PasswordValidator.isValid(newPassword)) {
+            throw new RuntimeException("Слабый пароль");
+        }
+
+        user.setPassword(pwEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
+
+    public void changeUsername(User user, String newUsername) {
+
+        if (newUsername == null || newUsername.length() < 3) {
+            throw new RuntimeException("Логин слишком короткий");
+        }
+
+        if (userRepository.findByUsername(newUsername).isPresent()) {
+            throw new RuntimeException("Логин уже занят");
+        }
+
+        user.setUsername(newUsername);
+        userRepository.save(user);
+    }
 
     public User register(String username, String rawPassword, String role) {
 

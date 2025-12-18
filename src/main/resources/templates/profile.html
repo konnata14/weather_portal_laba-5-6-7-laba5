@@ -1,25 +1,92 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"><title>Profile</title></head>
+<head>
+    <meta charset="UTF-8">
+    <title>Profile – Weather Portal</title>
+    <link rel="stylesheet" th:href="@{/css}">
+</head>
 <body>
-<h2>Profile: <span th:text="${user.username}"></span></h2>
-<p>Role: <span th:text="${user.role}"></span></p>
-<p>Server time: <span th:text="${serverTime}"></span></p>
-<p>Visit counter (unique profile entries this session): <span th:text="${visitCount}"></span></p>
+<div class="app-container">
+    <div class="card">
+        <div class="card-header">
+            <div>
+                <div class="badge">Weather Portal</div>
+                <div class="card-title">
+                    Профиль: <span th:text="${user.username}"></span>
+                </div>
+                <div class="card-subtitle">
+                    Роль: <span class="tag" th:text="${user.role}"></span>
+                </div>
+            </div>
+            <form th:action="@{/logout}" method="post">
+                <button class="secondary" type="submit">Logout</button>
+            </form>
+        </div>
 
-<div>
-    <h3>Photo</h3>
-    <div th:if="${user.photoFilename}">
-        <img th:src="@{'/uploads/' + ${user.photoFilename}}" alt="photo" style="max-width:200px"/>
+        <div class="grid-2">
+            <!-- Левая колонка: информация -->
+            <div>
+                <div class="profile-header">
+                    <div class="profile-meta">
+                        <span>Server time: <strong th:text="${serverTime}"></strong></span>
+                        <span>
+                            <span class="counter-pill">
+                                Views this session:
+                                <span class="value" th:text="${visitCount}"></span>
+                            </span>
+                        </span>
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px;">
+                    <div class="tag">Account info</div>
+                    <ul style="margin-top: 8px; padding-left: 18px; font-size: 13px; color: var(--text-muted);">
+                        <li>Логин хранится уникально в БД (таблица <code>users</code>).</li>
+                        <li>Пароль захеширован через BCrypt и не хранится в открытом виде.</li>
+                        <li>Роль управляет доступом к защищённым URL (&quot;/admin/**&quot;, &quot;/moderator/**&quot;).</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Правая колонка: фото -->
+            <div class="profile-photo">
+                <h3>Photo</h3>
+
+                <div th:if="${user.photoFilename}">
+                    <img th:src="@{'/uploads/' + ${user.photoFilename}}" alt="photo">
+                </div>
+                <div th:if="${user.photoFilename == null}">
+                    <div class="hint">Фото ещё не загружено.</div>
+                </div>
+
+                <form class="form" th:action="@{/profile/upload}" method="post" enctype="multipart/form-data">
+                    <div class="form-row">
+                        <label for="file">Upload new photo</label>
+                        <input id="file" type="file" name="file" accept="image/*">
+                        <div class="hint">Изображение будет сохранено на сервере и привязано к вашему аккаунту.</div>
+                    </div>
+                    <div class="form-row">
+                        <button type="submit">Upload</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
     </div>
-    <form th:action="@{/profile/upload}" method="post" enctype="multipart/form-data">
-        <input type="file" name="file"/>
-        <button type="submit">Upload</button>
-    </form>
 </div>
 
-<form th:action="@{/logout}" method="post">
-    <button type="submit">Logout</button>
-</form>
+<script>
+    // Небольшой фронт: подсказка о смене файла
+    const fileInput = document.getElementById('file');
+    if (fileInput) {
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length > 0) {
+                fileInput.closest('.form-row')
+                    .querySelector('.hint')
+                    .textContent = 'Файл выбран: ' + fileInput.files[0].name;
+            }
+        });
+    }
+</script>
 </body>
 </html>

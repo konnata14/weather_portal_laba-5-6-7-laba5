@@ -1,22 +1,55 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"><title>Register</title></head>
+<head>
+    <meta charset="UTF-8">
+    <title>Register – Weather Portal</title>
+    <link rel="stylesheet" th:href="@{/css}">
+</head>
 <body>
-<h2>Register</h2>
-<div th:if="${error}" th:text="${error}" style="color:red"></div>
-<form th:action="@{/register}" method="post">
-    <div><label>Username: <input name="username"/></label></div>
-    <div><label>Password: <input type="password" name="password"/></label></div>
-    <div>
-        <label>Role:
-            <select name="role">
-                <option value="ROLE_USER">User</option>
-                <option value="ROLE_MODERATOR">Moderator</option>
-                <option value="ROLE_ADMIN">Admin</option>
-            </select>
-        </label>
+<div class="app-container">
+    <div class="card">
+        <div class="card-header">
+            <div>
+                <div class="badge">Weather Portal</div>
+                <div class="card-title">Create account</div>
+                <div class="card-subtitle">Зарегистрируйте нового пользователя и выберите роль.</div>
+            </div>
+            <a class="link" th:href="@{/login}">← Уже есть аккаунт? Войти</a>
+        </div>
+
+        <div th:if="${error}" class="error" th:text="${error}"></div>
+
+        <form class="form" th:action="@{/register}" method="post">
+            <div class="form-row">
+                <label for="username">Username</label>
+                <input id="username" name="username" autocomplete="off" required>
+            </div>
+
+            <div class="form-row">
+                <label for="password">Password</label>
+                <input id="password" type="password" name="password" required>
+                <div class="hint">
+                    Пароль: минимум 8 символов, 1 буква, 1 цифра, 1 спецсимвол.
+                </div>
+            </div>
+
+            <div class="form-row">
+                <label for="role">Role</label>
+                <select id="role" name="role">
+                    <option value="ROLE_USER">User</option>
+                    <option value="ROLE_MODERATOR">Moderator</option>
+                    <option value="ROLE_ADMIN">Admin</option>
+                </select>
+                <div class="hint">
+                    Роль влияет на доступ: /admin/**, /moderator/** и т.д.
+                </div>
+            </div>
+
+            <div class="form-row">
+                <button type="submit">Create</button>
+            </div>
+        </form>
     </div>
-    <div><button type="submit">Create</button></div>
-</form>
+</div>
 </body>
 </html>

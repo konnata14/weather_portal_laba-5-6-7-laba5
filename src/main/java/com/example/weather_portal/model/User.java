@@ -23,12 +23,13 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
+    @Column(nullable = false)
     private String photoFilename;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    // Автоматическая установка даты при сохранении
+
     @PrePersist
     public void prePersist() {
         if (createdAt == null) {

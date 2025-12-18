@@ -1,13 +1,39 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"><title>Login</title></head>
+<head>
+    <meta charset="UTF-8">
+    <title>Login – Weather Portal</title>
+    <link rel="stylesheet" th:href="@{/css}">
+</head>
 <body>
-<h2>Login</h2>
-<form th:action="@{/login}" method="post">
-    <div><label>Username: <input name="username"/></label></div>
-    <div><label>Password: <input type="password" name="password"/></label></div>
-    <div><button type="submit">Login</button></div>
-</form>
-<p><a th:href="@{/register}">Register</a></p>
+<div class="app-container">
+    <div class="card">
+        <div class="card-header">
+            <div>
+                <div class="badge">Weather Portal</div>
+                <div class="card-title">Sign in</div>
+                <div class="card-subtitle">Войдите в аккаунт, чтобы открыть профиль и панель погоды.</div>
+            </div>
+            <a class="link" th:href="@{/register}">Создать новый аккаунт →</a>
+        </div>
+
+        <form class="form" th:action="@{/login}" method="post">
+            <div class="form-row">
+                <label for="username">Username</label>
+                <input id="username" name="username" autocomplete="username" required>
+            </div>
+            <div class="form-row">
+                <label for="password">Password</label>
+                <input id="password" type="password" name="password" autocomplete="current-password" required>
+            </div>
+            <div class="form-row">
+                <button type="submit">Login</button>
+            </div>
+            <div class="hint">
+                Тестовые пользователи: admin/adminpass, mod/modpass, user/userpass.
+            </div>
+        </form>
+    </div>
+</div>
 </body>
 </html>
